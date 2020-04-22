@@ -5,6 +5,14 @@ import java.util.*;
 
 public class Main {
 
+    public static void main(String[] args) throws IOException {
+        final String filePath = "..\\Learning1\\resources\\file1.txt";
+        ArrayList<Customer> customers = new ArrayList<>();
+        Menu menu = new Menu();
+        loadData(filePath,customers);
+        console(menu,filePath,customers);
+    }
+
     public static void loadData(String filePath, ArrayList<Customer> customers) throws IOException {
         BufferedReader fileReader = null;
         File file = new File(filePath);
@@ -166,14 +174,5 @@ public class Main {
                     break;
             }
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        final String filePath = "..\\Learning1\\resources\\file1.txt";
-        ArrayList<Customer> customers = new ArrayList<>();
-        Menu menu = new Menu();
-        loadData(filePath,customers);
-        console(menu,filePath,customers);
     }
 }
