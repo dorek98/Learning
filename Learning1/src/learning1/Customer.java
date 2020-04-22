@@ -36,8 +36,14 @@ public class Customer {
         this.surname = surname;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "name= '" + name + '\'' +
+                ", surname= '" + surname + '\'' +
+                ", age= " + age +
+                '}';
+    }
 }
 
 

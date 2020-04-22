@@ -1,114 +1,179 @@
 package learning1;
 
-
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Scanner scan = new Scanner(System.in);
-        String filePath1 = "E:\\IntelliJ IDEA Educational Edition 2019.3\\Learning1\\resources\\file1.txt";
-        FileWriter fileWriter = null;
-        BufferedReader fileReader = null;
-        File file = new File(filePath1);
-        Menu menu = new Menu();
 
-        List<Customer> customers = new LinkedList<>();
+    public static void loadData(String filePath, ArrayList<Customer> customers) throws IOException {
+        BufferedReader fileReader = null;
+        File file = new File(filePath);
         String line;
+
+        if (file.exists()) {
+            try {
+                fileReader = new BufferedReader(new FileReader(filePath));
+                line = fileReader.readLine();
+                while (line != null) {
+                    String[] splittedLine = line.split(",");
+                    customers.add(new Customer(splittedLine[0], splittedLine[1], Integer.parseInt(splittedLine[2])));
+                    line = fileReader.readLine();
+                }
+            } catch (IOException exception){
+                System.out.println("File read error!");
+            }
+            finally {
+                if (fileReader != null) {
+                    fileReader.close();
+                }
+            }
+        } else System.out.println("File doesn't exist");
+    }
+
+    public static void saveData(String filePath, ArrayList<Customer> customers) throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(filePath);
+            for (Customer customer : customers) {
+                fileWriter.write(customer.getName() + "," + customer.getSurname() + "," + customer.getAge() + "\n");
+            }
+        } catch (IOException exception) {
+            System.out.println("File save error!");
+        }finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
+        System.out.println("Data saved to file");
+    }
+
+    public static void showCustomers(ArrayList<Customer> customers){
+        int id = 1;
+        for (Customer customer : customers) {
+            System.out.printf("#%d: %s \n",id,customer);
+            id++;
+        }
+    }
+
+    public static void searchCustomer(Scanner scan, ArrayList<Customer> customers){
+        System.out.println("Searching for customer of index:");
+        try {
+            int j = scan.nextInt()-1;
+            System.out.printf("#%d: %s ",j+1,customers.get(j));
+        } catch (IndexOutOfBoundsException exception) {
+            System.out.println("No such index");
+        } catch (InputMismatchException exception) {
+            System.out.println("Wrong input! Integer is needed.");
+        }
+    }
+
+    public static  void addCustomer(Scanner scan, ArrayList<Customer> customers){
+        String[] record = new String[2];
+        int _age;
+        System.out.println("Give name: ");
+        record[0] = scan.next();
+        System.out.println("Give surname: ");
+        record[1] = scan.next();
+        System.out.println("Give age: ");
+        try {
+            _age = scan.nextInt();
+        } catch (InputMismatchException exception) {
+            System.out.println("Wrong input! Integer is needed.\nCustomer adding failed");
+            return;
+        }
+        customers.add(new Customer(record[0], record[1], _age));
+        System.out.println("Customer added successfully");
+    }
+
+    public static  void editCustomer(Scanner scan, ArrayList<Customer> customers){
+        System.out.println("Give index of customer to edit:");
+        int id = 0;
+        try {
+            id = scan.nextInt()-1;
+        } catch (IndexOutOfBoundsException exception) {
+            System.out.println("No such index");
+        } catch (InputMismatchException exception) {
+            System.out.println("Wrong input! Integer is needed.");
+        }
+        String[] record = new String[2];
+        int _age;
+        System.out.println("Give name: ");
+        record[0] = scan.next();
+        System.out.println("Give surname: ");
+        record[1] = scan.next();
+        System.out.println("Give age: ");
+        try {
+            _age = scan.nextInt();
+        } catch (InputMismatchException exception) {
+            System.out.println("Wrong input! Integer is needed.\nCustomer editing failed");
+            return;
+        }
+        customers.get(id).setAge(_age);
+        customers.get(id).setName(record[0]);
+        customers.get(id).setSurname(record[1]);
+        System.out.println("Customer edited successfully");
+    }
+
+    public  static void removeCustomer(Scanner scan,ArrayList<Customer> customers){
+        System.out.println("Removing customer of index: ");
+        try {
+            customers.remove(scan.nextInt()-1);
+            System.out.println("Customer removed successfully");
+        } catch (IndexOutOfBoundsException exception) {
+            System.out.println("No such index");
+            return;
+        } catch (InputMismatchException exception) {
+            System.out.println("Wrong input! Integer is needed.");
+        }
+    }
+
+    public static  void console(Menu menu,String filePath,ArrayList<Customer> customers) throws IOException {
         int button = -1;
         menu.show();
-        while(button != 0){
-
+        while (button != 0) {
+            final Scanner scan = new Scanner(System.in);
             try {
                 button = scan.nextInt();
-            } catch (Exception e){
+            } catch (InputMismatchException exception) {
+                System.out.println("Wrong input! Integer is needed.");
             }
-            switch (button){
+            switch (button) {
                 case 1:
-                    customers.removeAll(customers);
-                    if(file.exists()){
-                    try{
-                        fileReader = new BufferedReader(new FileReader(filePath1));
-                        line = fileReader.readLine();
-                        while( line != null) {
-                           String[] splittedLine = line.split(",");
-                            customers.add(new Customer(splittedLine[0],splittedLine[1],Integer.parseInt(splittedLine[2])));
-                            line = fileReader.readLine();
-
-                        }
-
-                    } finally {
-                        if (fileReader != null){
-                            fileReader.close();
-                        }
-                    }}else System.out.println("File doesn't exist");
+                    showCustomers(customers);
                     break;
                 case 2:
-                    for(int i = 0; i < customers.size() ;i++){
-                        System.out.println("#"+(i)+": " + customers.get(i).getName()+" "+customers.get(i).getSurname()+" "+customers.get(i).getAge() );
-                    }
+                    searchCustomer(scan,customers);
                     break;
                 case 3:
-                    String[] record = new String[3];
-                    System.out.println("Give name, surname and age of customer: ");
-                    for(int i = 0; i < 3;i++) {
-                        scan = new Scanner(System.in);
-                        record[i] = scan.nextLine();
-                    }
-                    customers.add(new Customer(record[0],record[1],Integer.parseInt(record[2])));
-                    System.out.println("Customer added successfully");
+                    addCustomer(scan,customers);
                     break;
                 case 4:
-                    if(customers.size() > 0 )
-                    customers.remove(customers.size()-1);
+                    editCustomer(scan,customers);
                     break;
                 case 5:
-                    System.out.println("Removing customer of index: ");
-                    scan = new Scanner(System.in);
-                    try {
-                        customers.remove(scan.nextInt());
-                        System.out.println("Customer removed successfully");
-                    } catch (Exception e){
-                        System.out.println("No such index");
-                        scan = new Scanner(System.in);
-                        break;
-                    }
+                    removeCustomer(scan,customers);
                     break;
                 case 6:
-                    System.out.println("Searching for customer of index:");
-                    scan = new Scanner(System.in);
-                    try {
-                        int j = scan.nextInt();
-                        System.out.println("#" + (j) + ": " + customers.get(j).getName() + " " + customers.get(j).getSurname() + " " + customers.get(j).getAge());
-                    } catch (Exception e){
-                        System.out.println("No such index");
-                        scan = new Scanner(System.in);
-                    }
+                    saveData(filePath,customers);
                     break;
                 case 7:
-                    try{
-                        fileWriter = new FileWriter(filePath1);
-                        for(Customer e:customers){
-                            fileWriter.write(e.getName()+","+e.getSurname()+","+e.getAge()+"\n");
-                        }
-                    } finally {
-                        if(fileWriter != null){
-                            fileWriter.close();
-                        }
-                    }
-                    break;
-                case 8:
                     menu.show();
                     break;
                 case 0:
                     break;
                 default:
-                    System.out.println("Wrong input! Try again.");
-                    scan = new Scanner(System.in);
+                    System.out.println("Input needs to be in range 0-8.");
                     break;
             }
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        final String filePath = "..\\Learning1\\resources\\file1.txt";
+        ArrayList<Customer> customers = new ArrayList<>();
+        Menu menu = new Menu();
+        loadData(filePath,customers);
+        console(menu,filePath,customers);
     }
 }
