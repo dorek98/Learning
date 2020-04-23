@@ -27,7 +27,7 @@ public class CustomerView {
     }
 
     public void showMenu(){
-        System.out.println("MENU!\n");
+        System.out.println(" MENU!\n");
         System.out.println("View all the customers press 1!");
         System.out.println("View specific customer press 2!");
         System.out.println("Add a customer press 3!");
