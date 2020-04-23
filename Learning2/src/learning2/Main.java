@@ -1,8 +1,16 @@
 package learning2;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Main {
 
-    public static void main(String[] args) {
-    System.out.printf("Test");
+    public static void main(String[] args) throws IOException {
+        final String filePath = "..\\Learning2\\resources\\file2.txt";
+        ArrayList<Customer> customers = new ArrayList<>();
+        CustomerView customerView = new CustomerView();
+        CustomerController customerController = new CustomerController(customerView,filePath,customers);
+        customerView.showMenu();
+        customerController.console(customerView,filePath,customers);
     }
 }
