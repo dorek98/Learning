@@ -14,18 +14,6 @@ public class CustomerView {
         }
     }
 
-    public static void searchCustomer(Scanner scan, ArrayList<Customer> customers){
-        System.out.println("Searching for customer of index:");
-        try {
-            int j = scan.nextInt()-1;
-            System.out.printf("#%d: %s ",j+1,customers.get(j));
-        } catch (IndexOutOfBoundsException exception) {
-            System.out.println("No such index");
-        } catch (InputMismatchException exception) {
-            System.out.println("Wrong input! Integer is needed.");
-        }
-    }
-
     public void showMenu(){
         System.out.println(" MENU!\n");
         System.out.println("View all the customers press 1!");

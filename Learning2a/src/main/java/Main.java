@@ -4,11 +4,11 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        final String filePath = "..\\Learning2a\\src\\main\\resources\\file2.txt";
+        final String FILEPATH = "..\\Learning2a\\src\\main\\resources\\fileCSV.csv";
         ArrayList<Customer> customers = new ArrayList<>();
         CustomerView customerView = new CustomerView();
-        CustomerController customerController = new CustomerController(customerView,filePath,customers);
+        CustomerController customerController = new CustomerController(customerView,FILEPATH,customers);
         customerView.showMenu();
-        customerController.console(customerView,filePath,customers);
+        customerController.console();
     }
 }
