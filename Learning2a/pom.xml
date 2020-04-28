@@ -22,7 +22,8 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.8</version>
-        </dependency></dependencies>
+        </dependency>
+    </dependencies>
 
 
 </project>

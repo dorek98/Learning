@@ -13,59 +13,49 @@ import java.util.Scanner;
 public class CustomerController {
     private CustomerView customerView;
     private ArrayList<Customer> customers;
-    String filePath;
+    final String FILEPATH;
     final Scanner scan = new Scanner(System.in);
 
 
-    public CustomerController(CustomerView customerView, String filePath, ArrayList<Customer> customers) {
+    public CustomerController(CustomerView customerView, String FILEPATH, ArrayList<Customer> customers) {
         this.customers = customers;
         this.customerView = customerView;
-        this.filePath = filePath;
+        this.FILEPATH = FILEPATH;
     }
 
-    public void loadCSV() throws IOException {
-        Reader reader = null;
-        try{
-            reader = Files.newBufferedReader(Paths.get(filePath));
-            CSVParser csvParser = new CSVParser(reader,CSVFormat.DEFAULT
-            .withFirstRecordAsHeader()
-            .withIgnoreHeaderCase()
-            .withTrim());
-            for (CSVRecord csvRecord : csvParser){
+    public void loadCSV() {
+        try (Reader reader = Files.newBufferedReader(Paths.get(FILEPATH))) {
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader()
+                    .withIgnoreHeaderCase()
+                    .withTrim());
+            for (CSVRecord csvRecord : csvParser) {
                 customers.add(new Customer(csvRecord.get("Name"), csvRecord.get("Surname"),
                         Integer.parseInt(csvRecord.get("Age"))));
             }
-        }catch (IOException exception){
+        } catch (IOException exception) {
+            exception.printStackTrace();
             System.out.println("File read error!");
-        }finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
-    public void saveCSV() throws IOException {
-        BufferedWriter writer = null;
-        try{
-            writer = Files.newBufferedWriter(Paths.get(filePath));
+    public void saveCSV() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(FILEPATH))) {
             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
-                    .withHeader("Name","Surname","Age"));
-            for (Customer customer : customers){
-                csvPrinter.printRecord(customer.getName(),customer.getSurname(),customer.getAge());
+                    .withHeader("Name", "Surname", "Age"));
+            for (Customer customer : customers) {
+                csvPrinter.printRecord(customer.getName(), customer.getSurname(), customer.getAge());
             }
             csvPrinter.flush();
-        }catch (IOException ex){
+        } catch (IOException exception) {
+            exception.printStackTrace();
             System.out.println("File save error!");
             return;
-        }finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
         System.out.println("Data saved to file");
     }
 
-    public void addCustomer(){
+    public void addCustomer() {
         String[] record = new String[2];
         int _age;
         System.out.println("Give name: ");
@@ -76,6 +66,7 @@ public class CustomerController {
         try {
             _age = scan.nextInt();
         } catch (InputMismatchException exception) {
+            exception.printStackTrace();
             System.out.println("Wrong input! Integer is needed.\nCustomer adding failed");
             return;
         }
@@ -83,23 +74,28 @@ public class CustomerController {
         System.out.println("Customer added successfully");
     }
 
-    public void showCustomer(){
+    public void showCustomer() {
         System.out.println("Searching for customer of index:");
         try {
-            int j = scan.nextInt()-1;
-            System.out.printf("#%d: %s ",j+1,customers.get(j));
-        } catch (IndexOutOfBoundsException exception) {
-            System.out.println("No such index");
+            int j = scan.nextInt() - 1;
+            System.out.printf("#%d: %s ", j + 1, customers.get(j));
         } catch (InputMismatchException exception) {
+            exception.printStackTrace();
             System.out.println("Wrong input! Integer is needed.");
+            return;
+
+        } catch (IndexOutOfBoundsException exception) {
+            exception.printStackTrace();
+            System.out.println("No such index");
+            return;
         }
     }
 
-    public void editCustomer(){
+    public void editCustomer() {
         System.out.println("Give index of customer to edit:");
         int id = 0;
         try {
-            id = scan.nextInt()-1;
+            id = scan.nextInt() - 1;
         } catch (IndexOutOfBoundsException exception) {
             System.out.println("No such index");
         } catch (InputMismatchException exception) {
@@ -124,10 +120,10 @@ public class CustomerController {
         System.out.println("Customer edited successfully");
     }
 
-    public void removeCustomer(){
+    public void removeCustomer() {
         System.out.println("Removing customer of index: ");
         try {
-            customers.remove(scan.nextInt()-1);
+            customers.remove(scan.nextInt() - 1);
             System.out.println("Customer removed successfully");
         } catch (IndexOutOfBoundsException exception) {
             System.out.println("No such index");
@@ -137,8 +133,7 @@ public class CustomerController {
         }
     }
 
-    public void console() throws IOException {
-        //loadData();
+    public void console() {
         loadCSV();
         int button = -1;
         customerView.showMenu();

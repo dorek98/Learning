@@ -6,15 +6,15 @@ public class CustomerView {
     public CustomerView() {
     }
 
-    public static void showCustomers(ArrayList<Customer> customers){
+    public static void showCustomers(ArrayList<Customer> customers) {
         int id = 1;
         for (Customer customer : customers) {
-            System.out.printf("#%d: %s \n",id,customer);
+            System.out.printf("#%d: %s \n", id, customer);
             id++;
         }
     }
 
-    public void showMenu(){
+    public void showMenu() {
         System.out.println(" MENU!\n");
         System.out.println("View all the customers press 1!");
         System.out.println("View specific customer press 2!");
